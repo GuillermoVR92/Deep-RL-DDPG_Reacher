@@ -10,18 +10,17 @@ import torch.nn.functional as F
 import torch.optim as optim
 
 BUFFER_SIZE = int(1e6)  # replay buffer size
-BATCH_SIZE = 128        # minibatch size
+BATCH_SIZE = 64        # minibatch size
 GAMMA = 0.99            # discount factor
 TAU = 1e-3              # for soft update of target parameters
 LR_ACTOR = 1e-4         # learning rate of the actor 
-LR_CRITIC = 1e-3        # learning rate of the critic
+LR_CRITIC = 1e-4        # learning rate of the critic
 WEIGHT_DECAY = 0        # L2 weight decay
 
 EPSILON = 1.0
 EPSILON_DECAY = 1e-6
 
-N_LEARN_UPDATES = 10     # number of learning updates
-N_TIME_STEPS = 20       # every n time step do update
+LEARN_EVERY = 10
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -68,17 +67,15 @@ class Agent():
         """Save experience in replay memory, and use random sample from buffer to learn."""
         # Save experience / reward
         self.memory.add(state, action, reward, next_state, done) #append to memory buffer
-
+   
         self.step_t += 1
-        # only learn every n_time_steps
-        if self.step_t % N_TIME_STEPS != 0:
-            return
+        self.step_t %= LEARN_EVERY
 
-        #check if enough samples in buffer. if so, learn from experiences, otherwise, keep collecting samples.
-        if(len(self.memory) > BATCH_SIZE):
-            for _ in range(N_LEARN_UPDATES):
-                experience = self.memory.sample()
-                self.learn(experience, GAMMA)
+        # Learn, if enough samples are available in memory
+        if len(self.memory) > BATCH_SIZE:
+            if self.step_t == 0:
+                experiences = self.memory.sample()
+                self.learn(experiences, GAMMA)
 
     def act(self, state, add_noise=True):
         """Returns actions for given state as per current policy."""
@@ -167,7 +164,8 @@ class OUNoise:
     def sample(self):
         """Update internal state and return it as a noise sample."""
         x = self.state
-        dx = self.theta * (self.mu - x) + self.sigma * np.array([random.random() for i in range(len(x))])
+        # dx = self.theta * (self.mu - x) + self.sigma * np.array([random.random() for i in range(len(x))])
+        dx = self.theta * (self.mu - x) + self.sigma * np.random.standard_normal(len(x))
         self.state = x + dx
         return self.state
 

@@ -23,48 +23,44 @@ def plot_scores(scores, rolling_window=10, save_fig=False):
     if save_fig:
         plt.savefig(f'figures_scores.png', bbox_inches='tight', pad_inches=0)
         
-def ddpg(num_agents, n_episodes=1000, max_t=200, print_every=2):
+def ddpg(n_episodes=3000, print_every=100):
     
     scores_deque = deque(maxlen=print_every)
     scores = []
     for i_episode in range(1, n_episodes+1):
         
         env_info = env.reset(train_mode=True)[brain_name]
-        states = env_info.vector_observations
+        state = env_info.vector_observations[0]
         agent.reset()
-        score = np.zeros(num_agents)
-        for t in range(max_t):
-            actions = agent.act(states)
-            
-            env_info = env.step(actions)[brain_name]
-            next_states = env_info.vector_observations
+        score = 0
+        while True:
+            action = agent.act(state)
+            env_info = env.step(action)[brain_name]
+            next_state = env_info.vector_observations[0]
                         
-            rewards = env_info.rewards                         # get reward (for each agent)
-            rewards = [0.1 if rew > 0 else 0 for rew in rewards]
-            done = (env_info.local_done)                     # see if episode finished
+            reward = env_info.rewards                     # get reward (for each agent)
+            done = env_info.local_done                    # see if episode finished
             
-            if num_agents > 1:
-                for i in range(num_agents):
-                    agent.step(states[i], actions[i], rewards[i], next_states[i], done[i])
-            else:
-                agent.step(states, actions, rewards, next_states, done)
+            agent.step(state, action, reward, next_state, done)
             
-            scores += rewards                         # update the score (for each agent)
-            states = next_states                               # roll over states to next time step
+            score += reward[0]                       # update the score (for each agent)
+            state = next_state                               # roll over states to next time step
             if np.any(done):                                  # exit loop if episode finished
                 break
+        # Save scores and compute average score over last 100 episodes
         scores_deque.append(score)
         scores.append(score)
+        avg_score = np.mean(scores_deque)
         
-        if i_episode % print_every == 0:
-            print('\rEpisode {}\tAverage Score: {:.2f}'.format(i_episode, np.mean(scores_deque)))
-            # plot_scores(scores)
-        
-        if np.mean(scores_deque) >= 30.0:
-            print('\nEnvironment solved in {:d} episodes!\tAverage Score: {:.2f}'.format(i_episode, np.mean(scores_deque)))
-            torch.save(agent.actor_local.state_dict(), '../weights/checkpoint_actor.pth')
-            torch.save(agent.critic_local.state_dict(), '../weights/checkpoint_critic.pth')
-            break
+        print('\rEpisode {}\tAverage Score: {:.2f}\tScore: {:.2f}'.format(i_episode, avg_score, score), end="")
+        if i_episode % 100 == 0:
+            torch.save(agent.actor_local.state_dict(), 'checkpoint_actor.pth')
+            torch.save(agent.critic_local.state_dict(), 'checkpoint_critic.pth')
+            # Early stop
+            if avg_score > 30:
+                print('\rEnvironment solved in {} episodes with an Average Score of {:.2f}'.format(i_episode, avg_score))
+                return scores
+            print('\rEpisode {}\tAverage Score: {:.2f}'.format(i_episode, avg_score))
     return scores
 
 # select this option to load version 1 (with a single agent) of the environment
@@ -100,7 +96,7 @@ print('The state for the first agent looks like:', states[0])
 agent = Agent(state_size=state_size, action_size=action_size,
               num_agents=num_agents, random_seed=42)
 
-scores = ddpg(num_agents)
+scores = ddpg()
 
 fig = plt.figure()
 ax = fig.add_subplot(111)
