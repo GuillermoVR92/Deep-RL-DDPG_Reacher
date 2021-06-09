@@ -35,11 +35,7 @@ The second version is useful for algorithms like [PPO](https://arxiv.org/pdf/170
 
 ### Solving the environment
 
-Depending on the chosen environment, there are 2 options to solve the environment:
-
-**Solve the single agent version**
-
-The task is episodic, and in order to solve the environment, the agent must get an average score of +30 over 100 consecutive episodes. In my implementation I chose to use a DDPG actor-critic agent to solve the problem.
+The task is episodic, and in order to solve the environment, the agent must get an average score of +30 over 100 consecutive episodes. In my implementation I chose to use a DDPG actor-critic agent to solve it.
 
 ## Getting started
 
