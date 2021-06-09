@@ -6,7 +6,7 @@ This repository contains my codes, report and other files for Udacity Deep Reinf
 
 In this environment, a double-jointed arm can move to target locations. A reward of +0.1 is provided for each step that the agent's hand is in the goal location. Thus, the goal of the agent is to maintain its position at the target location for as many time steps as possible.
 
-![In Project 2, train an agent to maintain its position at the target location for as many time steps as possible.](images/reacher.gif)
+![In Project 2, train an agent to maintain its position at the target location for as many time steps as possible.](media/trained.gif)
 
 ### Environment details
 
