@@ -1,4 +1,4 @@
-# Udacity Deep Reinforcement Learning Nanodegree: Continuous Control with Reacher and DDPG
+# Continuous Control with Reacher and DDPG
 
 This repository contains my codes, report and other files for Udacity Deep Reinforcement Learning Nanodegree Project 2: Continuous Control.
 
