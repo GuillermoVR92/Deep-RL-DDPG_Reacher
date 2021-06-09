@@ -37,18 +37,9 @@ The second version is useful for algorithms like [PPO](https://arxiv.org/pdf/170
 
 Depending on the chosen environment, there are 2 options to solve the environment:
 
-**Option 1: Solve the First Version**
+**Solve the single agent version**
 
-The task is episodic, and in order to solve the environment, the agent must get an average score of +30 over 100 consecutive episodes. 
-
-**Option 2: Solve the Second Version**
-
-The barrier for solving the second version of the environment is slightly different, to take into account the presence of many agents. In particular, the agents must get an average score of +30 (over 100 consecutive episodes, and over all agents). Specifically:
-    - After each episode, the rewards that each agent received (without discounting) are added up , to get a score for each agent. This yields 20 (potentially different) scores. The average of these 20 scores is then used.
-    - This yields an average score for each episode (where the average is over all 20 agents).
-The environment is considered solved, when the average (over 100 episodes) of those average scores is at least +30.
-
-**In my implementation I have chosen to solve the Second version of the environment (20 Agents) using DDPG algorithm.** 
+The task is episodic, and in order to solve the environment, the agent must get an average score of +30 over 100 consecutive episodes. In my implementation I chose to use a DDPG actor-critic agent to solve the problem.
 
 ## Getting started
 
@@ -80,6 +71,6 @@ The environment is considered solved, when the average (over 100 episodes) of th
 
 ### Training an agent
     
-You can either run `Continuous_Control.ipynb` in the Udacity Online Workspace for "Project2: Continuous Control" step by step or build your own local environment and set the path to the UnityEnvironment in the code.
+You can either run `Continuous_Control.ipynb` in the Udacity Online Workspace for "Project2: Continuous Control" step by step or build your own local environment and set the path to the UnityEnvironment in the code. You can also run the script `continuous_control_DDPG.py` if you prefer a built-in program instead of a step by step notebook.
 
 **Note:** The Workspace does not allow you to see the simulator of the environment; so, if you want to watch the agent while it is training, you should train locally.    
