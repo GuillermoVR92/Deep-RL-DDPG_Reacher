@@ -40,9 +40,13 @@ The second version is useful for algorithms like [PPO](https://arxiv.org/pdf/170
 
 The task is episodic, and in order to solve the environment, the agent must get an average score of +30 over 100 consecutive episodes. In my implementation I chose to use a DDPG actor-critic agent to solve it.
 
+![Average reward of Single agent.](learning_progress_plot.jpg)
+
 #### Multi Agent DDPG
 
 In order to solve the environment, the 20 agents must get an average score of +30 over 100 consecutive episodes. In my implementation I chose to use a multi agent DDPG actor-critic agent to solve it.
+
+![Average reward of 20 agents.](multiagent.jpg)
 
 ## Getting started
 
